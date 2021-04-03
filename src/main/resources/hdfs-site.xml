@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+	<!-- 指定副本存放数量 -->
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+
+
+	<property>
+	  <name>dfs.nameservices</name>
+	  <value>mycluster</value>
+	</property>
+	<!--修改NN的逻辑指向 -->
+	<property>
+	  <name>dfs.ha.namenodes.mycluster</name>
+	  <value>nn1,nn2</value>
+	</property>
+	<property>
+	  <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+	  <value>node1:8020</value>
+	</property>
+	<property>
+	  <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+	  <value>node2:8020</value>
+	</property>
+ 	<!-- 修改NN的物理指向 -->
+	<property>
+	  <name>dfs.namenode.http-address.mycluster.nn1</name>
+	  <value>node1:50070</value>
+	</property>
+	<property>
+	  <name>dfs.namenode.http-address.mycluster.nn2</name>
+	  <value>node2:50070</value>
+	</property>
+
+	<!-- 修改namenode数据存放路径 -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/var/bigdata/hadoop/ha/dfs/name</value>
+    </property>
+
+	<!-- 修改datanode数据存放路径 -->
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/var/bigdata/hadoop/ha/dfs/data</value>
+    </property>
+
+
+	<!-- 设置journalnode的节点集群 -->
+	<!-- mycluster是用于，多个NN集群共享同一个 JN集群时，隔离区分使用 -->
+	<property>
+	  <name>dfs.namenode.shared.edits.dir</name>
+	  <value>qjournal://node1:8485;node2:8485;node3:8485/mycluster</value>
+	</property>
+
+	<!-- 设置JN的数据存放节点-->
+	<property>
+	  <name>dfs.journalnode.edits.dir</name>
+	  <value>/var/bigdata/hadoop/ha/dfs/jn</value>
+	</property>
+
+
+	<!--指定HA模式的，自动切换的方式，以及密钥对-->
+    <property>
+      <name>dfs.ha.fencing.methods</name>
+      <value>
+	sshfence
+	shell(/bin/true)
+      </value>
+    </property>
+	<!--/root 为对应的用户名 -->
+    <property>
+      <name>dfs.ha.fencing.ssh.private-key-files</name>
+      <value>/home/hadoop/.ssh/id_dsa</value>
+    </property>
+
+
+
+	<!-- 开启故障自动切换NN配置 -->
+	 <property>
+	   <name>dfs.ha.automatic-failover.enabled</name>
+	   <value>true</value>
+	 </property>
+
+	<!-- mycluster与  NN的集群名称相对应 -->
+	<property>
+	  <name>dfs.client.failover.proxy.provider.mycluster</name>
+	  <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+	</property>
+
+
+</configuration>
+
