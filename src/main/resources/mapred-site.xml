@@ -21,5 +21,7 @@
     <property>
         <name>mapreduce.framework.name</name>
         <value>yarn</value>
+        <!-- 如果是本地调试时需要开启,也可以通过参数命令指定-->
+<!--        <value>local</value>-->
     </property>
 </configuration>
